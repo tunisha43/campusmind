@@ -1,5 +1,19 @@
 import { BookOpen, HeartHandshake, Lightbulb, ShieldCheck, Target, Users } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { PublicShell } from "../public-components";
+
+type Value = {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+};
+
+const values: Value[] = [
+  { icon: Users, title: "Student First", description: "Every feature should solve a real student problem." },
+  { icon: Lightbulb, title: "Useful AI", description: "AI should help students understand and create, not add unnecessary complexity." },
+  { icon: ShieldCheck, title: "Privacy Matters", description: "Academic documents and personal information deserve careful handling." },
+  { icon: HeartHandshake, title: "Accessible", description: "Powerful tools should remain affordable for students." }
+];
 
 export default function AboutPage() {
   return <PublicShell>
@@ -25,12 +39,16 @@ export default function AboutPage() {
       <div className="landing-container">
         <div className="center-heading"><span className="section-kicker">What we believe</span><h2>Designed with students in mind.</h2></div>
         <div className="values-grid">
-          {[
-            [Users,"Student First","Every feature should solve a real student problem."],
-            [Lightbulb,"Useful AI","AI should help students understand and create, not add unnecessary complexity."],
-            [ShieldCheck,"Privacy Matters","Academic documents and personal information deserve careful handling."],
-            [HeartHandshake,"Accessible","Powerful tools should remain affordable for students."]
-          ].map(([I,t,d])=><article className="value-card" key={t as string}><div><I size={21}/></div><h3>{t}</h3><p>{d}</p></article>)}
+          {values.map((value) => {
+            const Icon = value.icon;
+            return (
+              <article className="value-card" key={value.title}>
+                <div><Icon size={21}/></div>
+                <h3>{value.title}</h3>
+                <p>{value.description}</p>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
