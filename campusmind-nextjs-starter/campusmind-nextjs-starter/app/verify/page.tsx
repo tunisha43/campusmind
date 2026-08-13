@@ -1,0 +1,2 @@
+import Link from "next/link"; import VerifyForm from "./verify-form";
+export default async function Page({searchParams}:{searchParams:Promise<{email?:string}>}){const p=await searchParams;const email=p.email||"";return <main className="auth-page"><div className="card auth-card"><Link href="/" className="brand">CampusMind</Link><h1 style={{margin:"26px 0 8px"}}>Verify your email</h1><p className="muted">Enter the verification code sent to {email||"your email"}.</p><VerifyForm email={email}/></div></main>}

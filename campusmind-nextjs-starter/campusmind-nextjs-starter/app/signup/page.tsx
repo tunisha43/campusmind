@@ -1,0 +1,2 @@
+import Link from "next/link"; import SignupForm from "./signup-form";
+export default function Page(){return <main className="auth-page"><div className="card auth-card"><Link href="/" className="brand">CampusMind</Link><h1 style={{margin:"26px 0 8px"}}>Create your account</h1><p className="muted">Start your academic workspace.</p><SignupForm/><p className="muted" style={{textAlign:"center",fontSize:14,marginTop:18}}>Already have an account? <Link href="/login" style={{color:"#7f1d1d",fontWeight:700}}>Log in</Link></p></div></main>}

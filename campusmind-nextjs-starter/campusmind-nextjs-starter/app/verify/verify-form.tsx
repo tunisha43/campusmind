@@ -1,0 +1,5 @@
+ "use client";
+import {useState} from "react"; import {useRouter} from "next/navigation"; import {createClient} from "@/lib/supabase/client";
+export default function VerifyForm({email}:{email:string}){const r=useRouter();const [token,setToken]=useState("");const [loading,setLoading]=useState(false);const [error,setError]=useState("");
+async function submit(e:React.FormEvent){e.preventDefault();setLoading(true);setError("");const s=createClient();const {error}=await s.auth.verifyOtp({email,token,type:"email"});if(error){setError(error.message);setLoading(false);return}r.push("/onboarding");r.refresh()}
+return <form className="form" onSubmit={submit}><label className="label">Verification code<input className="input" required inputMode="numeric" maxLength={6} value={token} onChange={e=>setToken(e.target.value.replace(/\D/g,""))} placeholder="6-digit code"/></label>{error&&<div className="alert alert-error">{error}</div>}<button className="btn btn-primary" disabled={loading||token.length<6}>{loading?"Verifying...":"Verify email"}</button></form>}

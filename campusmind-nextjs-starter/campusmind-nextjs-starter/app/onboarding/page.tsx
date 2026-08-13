@@ -1,0 +1,2 @@
+import {redirect} from "next/navigation"; import {createClient} from "@/lib/supabase/server"; import OnboardingForm from "./onboarding-form";
+export default async function Page(){const s=await createClient();const {data:{user}}=await s.auth.getUser();if(!user)redirect("/login");const {data:universities}=await s.from("universities").select("id,name,country").order("name");return <OnboardingForm userId={user.id} universities={universities||[]}/>}

@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function Page(){return <main className="main" style={{marginLeft:0,width:"100%",maxWidth:1000,margin:"0 auto"}}><div className="page-header"><div><Link href="/dashboard" className="brand">CampusMind</Link><h1>Documents</h1><p className="muted">Upload study materials for summaries and AI study tools.</p></div><button className="btn btn-primary">Upload document</button></div><div className="card empty"><h2>No documents yet</h2><p className="muted">PDF processing will be connected next.</p></div></main>}
