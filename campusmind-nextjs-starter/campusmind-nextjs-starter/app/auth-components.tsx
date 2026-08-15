@@ -11,14 +11,9 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
     <footer className="auth-footer">© 2026 CampusMind. All rights reserved.</footer>
   </main>;
 }
-
-export function AuthCard({ eyebrow, title, description, children }: { eyebrow:string; title:string; description:string; children:React.ReactNode }) {
-  return <div className="auth-card">
-    <div className="auth-logo"><GraduationCap size={25}/></div>
-    <div className="auth-heading"><span>{eyebrow}</span><h1>{title}</h1><p>{description}</p></div>
-    {children}
-  </div>;
+export function AuthCard({eyebrow,title,description,children}:{eyebrow:string;title:string;description:string;children:React.ReactNode}) {
+  return <div className="auth-card"><div className="auth-logo"><GraduationCap size={25}/></div><div className="auth-heading"><span>{eyebrow}</span><h1>{title}</h1><p>{description}</p></div>{children}</div>;
 }
-export function AuthInput({label,type="text",placeholder}:{label:string;type?:string;placeholder:string}) {
-  return <label className="auth-label">{label}<input type={type} placeholder={placeholder}/></label>;
+export function AuthInput({label,type="text",placeholder,name}:{label:string;type?:string;placeholder:string;name?:string}) {
+  return <label className="auth-label">{label}<input name={name} type={type} placeholder={placeholder}/></label>;
 }
