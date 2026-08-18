@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import { ArrowLeft, BookOpen, Bot, Copy, FileText, Menu, Plus, Send, Sparkles, Trash2, UserRound, WandSparkles } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
 
 type Assignment = { id:string; title:string; instructions:string|null; content:string|null; status:string; course_id:string|null };
 type Message = { id:string; role:"user"|"assistant"; content:string };
 
-export default function AIPage() {
+function AIWorkspace() {
   const supabase=createClient();
   const searchParams=useSearchParams();
   const assignmentId=searchParams.get("assignment");
@@ -101,15 +101,19 @@ export default function AIPage() {
           </div>}
         </div>
 
-        <div className="cm-ai-composer-area">
-          {assignment&&<div className="cm-ai-context-pill"><FileText size={13}/> Working with: <b>{assignment.title}</b></div>}
-          <form className="cm-ai-composer" onSubmit={submit}>
-            <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();void sendMessage()}}} placeholder={assignment?"Ask something about this assignment...":"Ask CampusMind anything about your studies..."} rows={1}/>
-            <button className="cm-ai-send" type="submit" disabled={!input.trim()||sending} aria-label="Send message"><Send size={16}/></button>
-          </form>
-          <p className="cm-ai-disclaimer">CampusMind AI can make mistakes. Always verify important academic information.</p>
-        </div>
-      </main>
+       function AILoadingFallback() {
+  return (
+    <div className="cm-full-loader">
+      <div className="cm-loader" />
+      <span>Loading CampusMind AI...</span>
     </div>
-  </div>;
+  );
+}
+
+export default function AIPage() {
+  return (
+    <Suspense fallback={<AILoadingFallback />}>
+      <AIWorkspace />
+    </Suspense>
+  );
 }
