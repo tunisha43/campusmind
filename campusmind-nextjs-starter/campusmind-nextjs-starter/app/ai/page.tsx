@@ -50,17 +50,96 @@ function AIWorkspace() {
   }
 
   async function sendMessage(text = input) {
-    const message = text.trim();
-    if (!message || sending) return;
-    setInput("");
-    addMessage("user", message);
-    setSending(true);
-    window.setTimeout(() => {
-      const context = assignment ? `I have your assignment "${assignment.title}" in context. ` : "";
-      addMessage("assistant", `${context}The AI connection is ready to be connected. Your request was: "${message}"\n\nIn the next step, we'll connect this interface to the CampusMind AI API so I can actually answer the request.`);
-      setSending(false);
-    }, 700);
+  const message = text.trim();
+  if (!message || sending) return;
+
+  setInput("");
+  addMessage("user", message);
+  setSending(true);
+
+  try {
+    const contextMessages = messages.map((m) => ({
+      role: m.role,
+      content: m.content,
+    }));
+
+    const assignmentContext = assignment
+      ? `The student is currently working on an assignment titled "${assignment.title}".
+      
+Assignment instructions:
+${assignment.instructions || "No instructions provided."}
+
+Existing assignment content:
+${assignment.content || "No content written yet."}`
+      : "";
+
+    const response = await fetch("/api/ai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        task: "general",
+        messages: [
+          ...(assignmentContext
+            ? [
+                {
+                  role: "system",
+                  content: `You are CampusMind AI, an academic assistant helping a university student.
+
+${assignmentContext}
+
+Use this assignment context when it is relevant to the student's question. Give clear, useful academic assistance. Do not unnecessarily repeat the assignment information.`,
+                },
+              ]
+            : []),
+          ...contextMessages,
+          {
+            role: "user",
+            content: message,
+          },
+        ],
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (data?.error === "INSUFFICIENT_AI_CREDITS") {
+        addMessage(
+          "assistant",
+          "You don't have enough CampusMind AI credits for this request. Please check your AI credits or upgrade your plan."
+        );
+      } else if (data?.error === "UNAUTHENTICATED") {
+        addMessage(
+          "assistant",
+          "Your session has expired. Please log in again."
+        );
+      } else {
+        addMessage(
+          "assistant",
+          data?.message || "Sorry, I couldn't complete your request. Please try again."
+        );
+      }
+
+      return;
+    }
+
+    addMessage(
+      "assistant",
+      data?.message || "I received your request, but no response was returned."
+    );
+  } catch (error) {
+    console.error("CampusMind AI error:", error);
+
+    addMessage(
+      "assistant",
+      "Something went wrong while connecting to CampusMind AI. Please try again."
+    );
+  } finally {
+    setSending(false);
   }
+}
 
   function submit(e: FormEvent) { e.preventDefault(); void sendMessage(); }
   function clearChat() { setMessages([]); }
