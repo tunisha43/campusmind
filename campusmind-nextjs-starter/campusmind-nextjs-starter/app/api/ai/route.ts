@@ -215,6 +215,16 @@ export async function POST(request: Request) {
 
   try {
     const supabase = await createClient();
+
+    const { data: dbTest, error: dbTestError } = await supabase
+      .from("ai_credit_balances")
+      .select("user_id, credits_balance")
+      .limit(1);
+    
+    console.log("AI CREDIT TABLE TEST:", {
+      data: dbTest,
+      error: dbTestError,
+    });
     console.log(
       "SUPABASE URL:",
       process.env.NEXT_PUBLIC_SUPABASE_URL
