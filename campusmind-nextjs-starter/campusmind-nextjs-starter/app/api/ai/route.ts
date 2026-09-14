@@ -215,7 +215,10 @@ export async function POST(request: Request) {
 
   try {
     const supabase = await createClient();
-
+    console.log(
+      "SUPABASE URL:",
+      process.env.NEXT_PUBLIC_SUPABASE_URL
+    );
     const {
       data: { user },
     } = await supabase.auth.getUser();
